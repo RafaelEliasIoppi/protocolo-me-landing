@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rafaeleliasioppi.github.io/protocolo-me-landing/sitemap.xml
