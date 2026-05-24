@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Protocolo ME — Plataforma de Gestão de Doação de Órgãos</title>
+  <meta name="description" content="Plataforma web para gestão completa do protocolo de morte encefálica e doação de órgãos. Da notificação ao transplante, com rastreabilidade total." />
+  <style>
+    :root {
+      --azul-escuro: #0c4a6e;
+      --azul: #0369a1;
+      --azul-claro: #0ea5e9;
+      --ciano: #06b6d4;
+      --verde: #16a34a;
+      --laranja: #ea580c;
+      --cinza-900: #0f172a;
+      --cinza-700: #334155;
+      --cinza-500: #64748b;
+      --cinza-300: #cbd5e1;
+      --cinza-100: #f1f5f9;
+      --cinza-50: #f8fafc;
+      --branco: #ffffff;
+      --max-width: 1100px;
+      --radius: 14px;
+      --sombra: 0 12px 40px rgba(15, 23, 42, 0.12);
+      --sombra-leve: 0 4px 16px rgba(15, 23, 42, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--cinza-900);
+      line-height: 1.6;
+      background: var(--branco);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--azul);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    a:hover {
+      color: var(--azul-escuro);
+    }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Top bar ───────────────────────────────────────────── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: saturate(180%) blur(12px);
+      border-bottom: 1px solid var(--cinza-100);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
+
+    .marca {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--azul-escuro);
+      font-size: 1.05rem;
+    }
+
+    .marca-logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--azul) 0%, var(--ciano) 100%);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--branco);
+      font-weight: 800;
+      font-size: 0.85rem;
+      letter-spacing: -0.02em;
+    }
+
+    .topbar-nav {
+      display: flex;
+      gap: 28px;
+      font-size: 0.94rem;
+    }
+
+    .topbar-nav a {
+      color: var(--cinza-700);
+      font-weight: 500;
+    }
+
+    /* ── Hero ──────────────────────────────────────────────── */
+    .hero {
+      background:
+        radial-gradient(circle at 80% 10%, rgba(14, 165, 233, 0.18) 0%, transparent 50%),
+        radial-gradient(circle at 10% 90%, rgba(6, 182, 212, 0.12) 0%, transparent 50%),
+        linear-gradient(180deg, #f0f9ff 0%, var(--branco) 100%);
+      padding: 80px 0 96px;
+      border-bottom: 1px solid var(--cinza-100);
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      background: rgba(14, 165, 233, 0.1);
+      color: var(--azul);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--cinza-900);
+      max-width: 800px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--azul);
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--cinza-700);
+      max-width: 680px;
+      margin-bottom: 32px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 22px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.96rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--azul);
+      color: var(--branco);
+    }
+
+    .btn-primary:hover {
+      background: var(--azul-escuro);
+      color: var(--branco);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(3, 105, 161, 0.35);
+    }
+
+    .btn-ghost {
+      background: var(--branco);
+      color: var(--azul);
+      border-color: var(--cinza-300);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--azul);
+      background: var(--cinza-50);
+    }
+
+    /* ── Section base ──────────────────────────────────────── */
+    section {
+      padding: 80px 0;
+    }
+
+    .section-tag {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--azul);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.7rem, 3vw, 2.3rem);
+      letter-spacing: -0.01em;
+      color: var(--cinza-900);
+      max-width: 720px;
+      margin-bottom: 16px;
+      line-height: 1.25;
+    }
+
+    .section-lead {
+      font-size: 1.08rem;
+      color: var(--cinza-700);
+      max-width: 720px;
+      margin-bottom: 48px;
+    }
+
+    /* ── Problema ──────────────────────────────────────────── */
+    .problema {
+      background: var(--cinza-50);
+    }
+
+    .problema-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-top: 36px;
+    }
+
+    .problema-card {
+      background: var(--branco);
+      border-radius: var(--radius);
+      padding: 26px;
+      border: 1px solid var(--cinza-100);
+      box-shadow: var(--sombra-leve);
+    }
+
+    .problema-card h3 {
+      font-size: 1.05rem;
+      color: var(--cinza-900);
+      margin-bottom: 8px;
+    }
+
+    .problema-card p {
+      color: var(--cinza-500);
+      font-size: 0.95rem;
+    }
+
+    .problema-card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 14px;
+    }
+
+    /* ── Features grid ─────────────────────────────────────── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .feature {
+      padding: 28px;
+      border-radius: var(--radius);
+      border: 1px solid var(--cinza-100);
+      background: var(--branco);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .feature:hover {
+      transform: translateY(-3px);
+      border-color: var(--ciano);
+      box-shadow: var(--sombra);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+      margin-bottom: 18px;
+      background: linear-gradient(135deg, var(--azul) 0%, var(--ciano) 100%);
+      color: var(--branco);
+    }
+
+    .feature h3 {
+      font-size: 1.08rem;
+      margin-bottom: 8px;
+      color: var(--cinza-900);
+    }
+
+    .feature p {
+      color: var(--cinza-500);
+      font-size: 0.95rem;
+    }
+
+    /* ── Diferenciais técnicos ─────────────────────────────── */
+    .tech {
+      background: linear-gradient(180deg, var(--cinza-900) 0%, #1e293b 100%);
+      color: var(--cinza-100);
+    }
+
+    .tech .section-title {
+      color: var(--branco);
+    }
+
+    .tech .section-lead {
+      color: var(--cinza-300);
+    }
+
+    .tech .section-tag {
+      color: var(--azul-claro);
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .tech-item {
+      padding: 22px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      transition: background 0.2s;
+    }
+
+    .tech-item:hover {
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .tech-item strong {
+      display: block;
+      color: var(--branco);
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .tech-item span {
+      color: var(--cinza-300);
+      font-size: 0.9rem;
+    }
+
+    .tech-stack {
+      margin-top: 56px;
+      padding-top: 36px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .tech-stack-label {
+      font-size: 0.82rem;
+      color: var(--cinza-300);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-right: 6px;
+    }
+
+    .tech-pill {
+      padding: 6px 14px;
+      background: rgba(14, 165, 233, 0.15);
+      color: var(--azul-claro);
+      border: 1px solid rgba(14, 165, 233, 0.25);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* ── Sobre / contato ───────────────────────────────────── */
+    .sobre {
+      background: linear-gradient(180deg, #f0f9ff 0%, var(--branco) 100%);
+    }
+
+    .sobre-grid {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--azul) 0%, var(--ciano) 100%);
+      display: grid;
+      place-items: center;
+      color: var(--branco);
+      font-size: 3.8rem;
+      font-weight: 700;
+      box-shadow: var(--sombra);
+    }
+
+    .sobre h2 {
+      font-size: 1.6rem;
+      color: var(--cinza-900);
+      margin-bottom: 6px;
+    }
+
+    .sobre .titulo {
+      color: var(--azul);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .sobre p {
+      color: var(--cinza-700);
+      margin-bottom: 24px;
+    }
+
+    .contato {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .contato a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--branco);
+      border: 1px solid var(--cinza-300);
+      border-radius: 10px;
+      color: var(--cinza-700);
+      font-weight: 500;
+      font-size: 0.94rem;
+    }
+
+    .contato a:hover {
+      border-color: var(--azul);
+      color: var(--azul);
+    }
+
+    /* ── Footer ────────────────────────────────────────────── */
+    footer {
+      padding: 36px 0;
+      background: var(--cinza-900);
+      color: var(--cinza-300);
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--azul-claro);
+    }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 760px) {
+      .topbar-nav {
+        display: none;
+      }
+
+      section {
+        padding: 56px 0;
+      }
+
+      .hero {
+        padding: 56px 0 64px;
+      }
+
+      .sobre-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 24px;
+      }
+
+      .avatar {
+        margin: 0 auto;
+      }
+
+      .contato {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="marca">
+        <div class="marca-logo">ME</div>
+        Protocolo ME
+      </div>
+      <nav class="topbar-nav">
+        <a href="#problema">Problema</a>
+        <a href="#solucao">Solução</a>
+        <a href="#funcionalidades">Funcionalidades</a>
+        <a href="#tecnologia">Tecnologia</a>
+        <a href="#contato">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <span class="hero-eyebrow">Plataforma de Gestão</span>
+      <h1>Da notificação ao transplante, com <em>rastreabilidade total</em>.</h1>
+      <p>
+        Plataforma web para gestão completa do protocolo de morte encefálica e doação de órgãos.
+        Conecta hospitais e Centrais de Transplante em um único fluxo digital, com auditoria,
+        validação clínica e comunicação em tempo real.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#solucao">Conhecer a solução</a>
+        <a class="btn btn-ghost" href="#contato">Falar com o autor</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEMA -->
+  <section id="problema" class="problema">
+    <div class="container">
+      <div class="section-tag">O Cenário</div>
+      <h2 class="section-title">A doação de órgãos no Brasil exige coordenação em tempo real — mas, na prática, ainda depende de papel, telefone e planilhas.</h2>
+      <p class="section-lead">
+        O SUS mantém uma das maiores redes públicas de transplante do mundo. Mesmo assim, a
+        jornada entre a notificação de um possível doador e a viabilização da doação ainda
+        sofre com fragmentação de informações, retrabalho clínico e perda de janelas críticas.
+      </p>
+
+      <div class="problema-grid">
+        <div class="problema-card">
+          <div class="problema-card-icon">⏱️</div>
+          <h3>O tempo é decisivo</h3>
+          <p>Cada hora entre a notificação e a autorização da família reduz a viabilidade clínica do doador.</p>
+        </div>
+        <div class="problema-card">
+          <div class="problema-card-icon">📋</div>
+          <h3>Processos fragmentados</h3>
+          <p>Documentos físicos, ligações e mensagens dispersas geram retrabalho e dificultam a rastreabilidade.</p>
+        </div>
+        <div class="problema-card">
+          <div class="problema-card-icon">🏥</div>
+          <h3>Múltiplos hospitais simultâneos</h3>
+          <p>A Central precisa coordenar dezenas de protocolos ao mesmo tempo, sem visibilidade unificada.</p>
+        </div>
+        <div class="problema-card">
+          <div class="problema-card-icon">🔒</div>
+          <h3>Auditoria e conformidade</h3>
+          <p>LGPD e exigências de prontuário eletrônico demandam registro íntegro de cada ação clínica.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUÇÃO -->
+  <section id="solucao">
+    <div class="container">
+      <div class="section-tag">A Plataforma</div>
+      <h2 class="section-title">Protocolo ME — um sistema unificado para todo o fluxo de doação.</h2>
+      <p class="section-lead">
+        Hospitais notificam, equipes clínicas registram exames, a Central valida e autoriza,
+        famílias são entrevistadas e o transplante é coordenado. Tudo em uma única plataforma
+        web, com perfis de acesso por papel e atualizações em tempo real.
+      </p>
+    </div>
+  </section>
+
+  <!-- FUNCIONALIDADES -->
+  <section id="funcionalidades" style="padding-top: 0;">
+    <div class="container">
+      <div class="features-grid">
+        <div class="feature">
+          <div class="feature-icon">📍</div>
+          <h3>Fluxo de protocolo guiado</h3>
+          <p>Da notificação à finalização, com etapas claras: confirmação de ME, entrevista familiar, autorização e doação.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🧪</div>
+          <h3>Validação dupla de exames</h3>
+          <p>Os 4 exames obrigatórios (2 clínicos, apneia e complementar) são registrados pelo hospital e validados pela Central.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">💬</div>
+          <h3>Chat por protocolo</h3>
+          <p>Conversa direta entre hospital notificante e Central, com badge de mensagens não lidas e acesso rápido.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔔</div>
+          <h3>Notificações em tempo real</h3>
+          <p>Toasts, sino e som de alerta para cada evento crítico — sem precisar atualizar a página.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📺</div>
+          <h3>Telão da Central</h3>
+          <p>Modo apresentação para sala de coordenação, com rotação automática, filtros por hospital e por status.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📄</div>
+          <h3>Relatório final completo</h3>
+          <p>Pasta digital do paciente com dados auto-preenchidos, folhas livres e impressão pronta em formato A4.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🏥</div>
+          <h3>Multi-hospital nativo</h3>
+          <p>Profissionais com vínculo a múltiplos hospitais. Permissões por papel: Central, Coordenador, Médico, Enfermeiro.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🗄️</div>
+          <h3>Auditoria completa</h3>
+          <p>Toda ação registrada com usuário, IP, entidade e horário — pronto para conformidade LGPD e fiscalização.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔑</div>
+          <h3>Recuperação de senha por email</h3>
+          <p>Fluxo público com token de uso único, expiração curta e proteção contra enumeração de usuários.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIFERENCIAIS TÉCNICOS -->
+  <section id="tecnologia" class="tech">
+    <div class="container">
+      <div class="section-tag">Diferenciais Técnicos</div>
+      <h2 class="section-title">Engenharia pensada para confiabilidade clínica.</h2>
+      <p class="section-lead">
+        Atualização instantânea sem sobrecarga de rede, autenticação robusta, separação de
+        responsabilidades por papel e infraestrutura preparada para crescer junto com o
+        volume de protocolos.
+      </p>
+
+      <div class="tech-grid">
+        <div class="tech-item">
+          <strong>Server-Sent Events (SSE)</strong>
+          <span>Push do servidor com latência abaixo de 500 ms — sem polling agressivo.</span>
+        </div>
+        <div class="tech-item">
+          <strong>Autenticação JWT + Rate Limit</strong>
+          <span>Tokens seguros, expiração configurável e proteção contra brute-force.</span>
+        </div>
+        <div class="tech-item">
+          <strong>Auditoria nativa</strong>
+          <span>Cada operação sensível registrada com ator, ação, entidade, IP e timestamp.</span>
+        </div>
+        <div class="tech-item">
+          <strong>Multi-tenant por hospital</strong>
+          <span>Profissionais vinculados a um ou mais hospitais com isolamento de dados.</span>
+        </div>
+        <div class="tech-item">
+          <strong>Acessibilidade WCAG</strong>
+          <span>Contraste 4.5:1, navegação por teclado e suporte a redução de movimento.</span>
+        </div>
+        <div class="tech-item">
+          <strong>Tema claro e escuro</strong>
+          <span>Adaptado para uso em sala de coordenação 24/7 sem fadiga visual.</span>
+        </div>
+        <div class="tech-item">
+          <strong>API REST documentada</strong>
+          <span>Integração com sistemas hospitalares e dashboards de gestão.</span>
+        </div>
+        <div class="tech-item">
+          <strong>Banco gerenciado</strong>
+          <span>PostgreSQL com pooler, índices otimizados e backup automatizado.</span>
+        </div>
+      </div>
+
+      <div class="tech-stack">
+        <span class="tech-stack-label">Stack:</span>
+        <span class="tech-pill">Spring Boot 3</span>
+        <span class="tech-pill">Java 17</span>
+        <span class="tech-pill">React 18</span>
+        <span class="tech-pill">PostgreSQL</span>
+        <span class="tech-pill">Hibernate 6</span>
+        <span class="tech-pill">JWT</span>
+        <span class="tech-pill">SSE</span>
+        <span class="tech-pill">MapStruct</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE / CONTATO -->
+  <section id="contato" class="sobre">
+    <div class="container">
+      <div class="section-tag">Sobre o autor</div>
+      <div class="sobre-grid">
+        <div class="avatar">RI</div>
+        <div>
+          <h2>Rafael Elias Ioppi</h2>
+          <div class="titulo">Desenvolvedor full-stack · Criador da plataforma</div>
+          <p>
+            Protocolo ME é um projeto independente desenvolvido com foco em uso clínico
+            real — pensado lado a lado com profissionais da área para resolver dores
+            específicas da cadeia de doação de órgãos no Brasil.
+          </p>
+          <p>
+            Entre em contato para conversar sobre piloto, customização, hospedagem
+            dedicada ou integração com sistemas existentes.
+          </p>
+          <div class="contato">
+            <a href="mailto:rafaelioppi@gmail.com">✉️ rafaelioppi@gmail.com</a>
+            <a href="https://github.com/rafaelioppi" target="_blank" rel="noopener">💻 GitHub</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      © <span id="ano"></span> Rafael Elias Ioppi · Protocolo ME · Todos os direitos reservados
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("ano").textContent = new Date().getFullYear();
+  </script>
+
+</body>
+</html>
